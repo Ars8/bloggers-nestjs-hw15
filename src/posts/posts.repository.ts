@@ -96,11 +96,12 @@ export class PostsRepository {
     if (!isValidObjectId(id)) return null;
     const post = await this.postModel
       .findById(id)
-      .populate({
-        path: 'blogName',
-        transform: returnNameFromPopulation,
-      })
       .lean();
+
+      if (!post) {
+        return null;
+      }
+      
     return idMapper(post);
   }
   async update(id: string, updatePostDto: UpdatePostDto): Promise<boolean> {
