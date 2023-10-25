@@ -92,16 +92,76 @@ export class PostsRepository {
       idMapper(posts),
     );
   }
-  async findOne(id: string): Promise<OutputPostDto | null> {
+  async findOne(
+    id: string,
+    user: { userId: string; userName: string } | null,
+  ): Promise<OutputPostDto | null> {
     if (!isValidObjectId(id)) return null;
-    const post = await this.postModel
-      .findById(id)
-      .lean();
+    const post = await this.postModel.findById(id).lean();
 
-      if (!post) {
-        return null;
+    if (!post) {
+      return null;
+    }
+
+    if (!user) {
+      return idMapper(post);
+    }
+
+    const filledPosts = [];
+
+    const findpost = [post];
+    for (const i in findpost) {
+      const postId = findpost[i]._id.toString();
+      const currentPost = findpost[i];
+
+      // getting likes and count
+      currentPost.extendedLikesInfo.likesCount = await this.likePostModel
+        .countDocuments({
+          $and: [{ postId: postId }, { likeStatus: 'Like' }],
+        })
+        .lean();
+
+      // getting dislikes and count
+      currentPost.extendedLikesInfo.dislikesCount = await this.likePostModel
+        .countDocuments({
+          $and: [{ postId: postId }, { likeStatus: 'Dislike' }],
+        })
+        .lean();
+
+      // getting the status of the post owner
+      let ownStatus = 'None';
+      if (user) {
+        const findOwnPost = await this.likePostModel.findOne({
+          $and: [{ postId: postId }, { userId: user.userId }],
+        });
+        if (findOwnPost) {
+          ownStatus = findOwnPost.likeStatus;
+        }
       }
-      
+      currentPost.extendedLikesInfo.myStatus = ownStatus;
+
+      // getting 3 last likes
+      currentPost.extendedLikesInfo.newestLikes = await this.likePostModel
+        .find(
+          {
+            $and: [{ postId: postId }, { likeStatus: 'Like' }],
+          },
+          {
+            _id: false,
+            __v: false,
+            postId: false,
+            likeStatus: false,
+          },
+        )
+        .sort({ addedAt: -1 })
+        .limit(3);
+      console.log(currentPost.extendedLikesInfo.newestLikes);
+
+      filledPosts.push(currentPost);
+
+      console.log(filledPosts, 'likes');
+    }
+
     return idMapper(post);
   }
   async update(id: string, updatePostDto: UpdatePostDto): Promise<boolean> {

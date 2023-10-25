@@ -12,6 +12,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { MailManager } from '../managers/mailManager';
 import { UsersService } from '../users/users.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { UsersService } from '../users/users.service';
     HashManager,
     JwtStrategy,
     MailManager,
+    JwtAuthGuard,
   ],
   controllers: [AuthController],
 })

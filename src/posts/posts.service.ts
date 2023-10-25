@@ -24,8 +24,11 @@ export class PostsService {
     return this.postsRepository.findAll(query);
   }
 
-  async findOne(id: string): Promise<OutputPostDto | null> {
-    return this.postsRepository.findOne(id);
+  async findOne(
+    id: string,
+    user: { userId: string; userName: string } | null,
+  ): Promise<OutputPostDto | null> {
+    return this.postsRepository.findOne(id, user);
   }
 
   async update(id: string, updatePostDto: UpdatePostDto): Promise<boolean> {

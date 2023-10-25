@@ -25,6 +25,7 @@ import { OutputCommentDto } from '../comments/dto/output-comment.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { LikeStatusPostDto } from './dto/like-status-post.dto';
+import { ExtractUserFromToken } from 'src/auth/guards/extractUserFromToken.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -40,9 +41,13 @@ export class PostsController {
     return this.postsService.findAll(queryHandler(query));
   }
 
+  @UseGuards(ExtractUserFromToken)
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<OutputPostDto | null> {
-    const post = await this.postsService.findOne(id);
+  async findOne(
+    @Request() req,
+    @Param('id') id: string,
+  ): Promise<OutputPostDto | null> {
+    const post = await this.postsService.findOne(id, req.user);
     if (!post) throw new NotFoundException();
     return post;
   }
@@ -72,7 +77,7 @@ export class PostsController {
     @Param('id') id: string,
     @Body() createCommentDto: CreateCommentDto,
   ): Promise<OutputCommentDto> {
-    const post = await this.postsService.findOne(id);
+    const post = await this.postsService.findOne(id, null);
     if (!post) throw new NotFoundException();
     return this.postsService.addComment(id, req.user, createCommentDto);
   }
@@ -81,7 +86,7 @@ export class PostsController {
     @Param('id') id: string,
     @Query() query,
   ): Promise<PaginationViewType<OutputCommentDto>> {
-    const post = await this.postsService.findOne(id);
+    const post = await this.postsService.findOne(id, null);
     if (!post) throw new NotFoundException();
     return this.postsService.getPostComments(id, queryHandler(query));
   }
@@ -93,7 +98,7 @@ export class PostsController {
     @Param('id') id: string,
     @Body() likeStatusPostDto: LikeStatusPostDto,
   ) {
-    const post = await this.postsService.findOne(id);
+    const post = await this.postsService.findOne(id, null);
     if (!post) throw new NotFoundException();
     const likePost = this.postsService.changeLikeStatusPost(
       id,
