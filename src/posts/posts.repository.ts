@@ -128,7 +128,7 @@ export class PostsRepository {
         })
         .lean();
 
-      // getting the status of the post owner
+      // getting the status of the postOwner
       let ownStatus = 'None';
       if (user) {
         const findOwnPost = await this.likePostModel.findOne({
