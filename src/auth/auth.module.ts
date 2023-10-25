@@ -13,6 +13,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { MailManager } from '../managers/mailManager';
 import { UsersService } from '../users/users.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { ExtractUserFromToken } from './guards/extractUserFromToken.guard';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     JwtStrategy,
     MailManager,
     JwtAuthGuard,
+    ExtractUserFromToken,
   ],
   controllers: [AuthController],
 })
