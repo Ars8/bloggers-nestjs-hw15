@@ -154,9 +154,9 @@ export class PostsRepository {
 
       filledPosts.push(currentPost);
     }
-    console.log(filledPosts, 'likes');
+    console.log(filledPosts[0], 'likes');
 
-    return idMapper(filledPosts);
+    return idMapper(filledPosts[0]);
   }
   async update(id: string, updatePostDto: UpdatePostDto): Promise<boolean> {
     if (!isValidObjectId(id)) return false;
