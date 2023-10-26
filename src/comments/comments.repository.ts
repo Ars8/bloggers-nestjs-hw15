@@ -41,10 +41,10 @@ export class CommentsRepository {
         userLogin: user.userName,
       },
       likesInfo: {
-        likeCount: 0,
+        likesCount: 0,
         dislikesCount: 0,
-        myStatus: "None",
-      }
+        myStatus: 'None',
+      },
     });
     await createdComment.save();
     const { postId: postID, ...rest } = createdComment.toObject();
