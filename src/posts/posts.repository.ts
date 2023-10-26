@@ -202,9 +202,9 @@ export class PostsRepository {
       return null;
     }
 
-    /* if (!user) {
+    if (!user) {
       return idMapper(post);
-    } */
+    }
 
     const filledPosts = [];
 
