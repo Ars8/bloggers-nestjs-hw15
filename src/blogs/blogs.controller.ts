@@ -11,6 +11,7 @@ import {
   HttpStatus,
   UseGuards,
   HttpCode,
+  Request,
 } from '@nestjs/common';
 import { queryHandler } from 'src/helpers/queryHandler';
 import { PaginationViewType } from 'src/helpers/transformToPaginationView';
@@ -21,6 +22,7 @@ import { CreateBlogDto } from './dto/create-blog.dto';
 import { OutputBlogDto } from './dto/output-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { ExtractUserFromToken } from 'src/auth/guards/extractUserFromToken.guard';
 
 @Controller('blogs')
 export class BlogsController {
@@ -49,14 +51,20 @@ export class BlogsController {
     return this.blogsService.findAll(queryHandler(query));
   }
 
+  @UseGuards(ExtractUserFromToken)
   @Get(':id/posts')
   async findAllPostsForBlog(
+    @Request() req,
     @Query() query,
     @Param('id') id: string,
   ): Promise<PaginationViewType<OutputPostDto>> {
     const blog = await this.blogsService.findOne(id);
     if (!blog) throw new NotFoundException();
-    return this.blogsService.findAllPostsForBlog(queryHandler(query), id);
+    return this.blogsService.findAllPostsForBlog(
+      queryHandler(query),
+      id,
+      req.user,
+    );
   }
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<OutputBlogDto | null> {

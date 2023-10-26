@@ -37,8 +37,9 @@ export class BlogsService {
   async findAllPostsForBlog(
     query: QueryType,
     id: string,
+    user: { userId: string; userName: string } | null,
   ): Promise<PaginationViewType<OutputPostDto>> {
-    return this.postsRepository.findAllPostsForBlog(query, id);
+    return this.postsRepository.findAllPostsForBlog(query, id, user);
   }
 
   async update(id: string, updateBlogDto: UpdateBlogDto): Promise<boolean> {

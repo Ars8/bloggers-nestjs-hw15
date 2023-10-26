@@ -8,6 +8,7 @@ import { BlogsService } from './blogs.service';
 import { Blog, BlogSchema } from './entities/blog.entity';
 import { LikePost, LikePostSchema } from 'src/posts/entities/like-post.entity';
 import { PostsService } from 'src/posts/posts.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PostsService } from 'src/posts/posts.service';
     BlogsService,
     { provide: 'IBlogsRepository', useClass: BlogsRepository },
     PostsRepository,
+    JwtService,
   ],
 })
 export class BlogsModule {}
