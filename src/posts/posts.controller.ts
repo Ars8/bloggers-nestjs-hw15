@@ -36,9 +36,13 @@ export class PostsController {
     return this.postsService.create(createPostDto);
   }
 
+  @UseGuards(ExtractUserFromToken)
   @Get()
-  async findAll(@Query() query): Promise<PaginationViewType<OutputPostDto>> {
-    return this.postsService.findAll(queryHandler(query));
+  async findAll(
+    @Request() req,
+    @Query() query,
+  ): Promise<PaginationViewType<OutputPostDto>> {
+    return this.postsService.findAll(queryHandler(query), req.user);
   }
 
   @UseGuards(ExtractUserFromToken)
@@ -49,7 +53,6 @@ export class PostsController {
   ): Promise<OutputPostDto | null> {
     const post = await this.postsService.findOne(id, req.user);
     if (!post) throw new NotFoundException();
-    console.log(post);
     return post;
   }
   @UseGuards(AuthGuard('basic'))

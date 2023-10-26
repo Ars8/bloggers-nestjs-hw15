@@ -59,33 +59,83 @@ export class PostsRepository {
       idMapper(posts),
     );
   }
-  async findAll(query: QueryType): Promise<PaginationViewType<OutputPostDto>> {
+  async findAll(
+    query: QueryType,
+    user: { userId: string; userName: string } | null,
+  ): Promise<PaginationViewType<OutputPostDto>> {
     const totalCount = await this.postModel.count({
       title: { $regex: query.searchNameTerm, $options: 'i' },
     });
     const posts = await this.postModel
-      .aggregate([
-        { $match: { title: { $regex: query.searchNameTerm, $options: 'i' } } },
+      .find(
+        {},
         {
-          $lookup: {
-            from: 'blogs',
-            localField: 'blogName',
-            foreignField: '_id',
-            as: 'blogName',
-          },
+          __v: false,
         },
-        { $set: { blogName: '$blogName.name' } },
-      ])
-      .unwind({ path: '$blogName' })
-      .sort({ [query.sortBy]: query.sortDirection })
-      .skip(query.pageSize * (query.pageNumber - 1))
+      )
       .limit(query.pageSize)
-      .exec();
+      .skip(query.pageSize * (query.pageNumber - 1))
+      .sort({ [query.sortBy]: query.sortDirection })
+      .lean();
+
+    const filledPosts = [];
+
+    const findpost = posts;
+    for (const i in findpost) {
+      const postId = findpost[i]._id.toString();
+      const currentPost = findpost[i];
+
+      // getting likes and count
+      currentPost.extendedLikesInfo.likesCount = await this.likePostModel
+        .countDocuments({
+          $and: [{ postId: postId }, { likeStatus: 'Like' }],
+        })
+        .lean();
+
+      // getting dislikes and count
+      currentPost.extendedLikesInfo.dislikesCount = await this.likePostModel
+        .countDocuments({
+          $and: [{ postId: postId }, { likeStatus: 'Dislike' }],
+        })
+        .lean();
+
+      // getting the status of the postOwner
+      let ownStatus = 'None';
+      if (user) {
+        const findOwnPost = await this.likePostModel.findOne({
+          $and: [{ postId: postId }, { userId: user.userId }],
+        });
+        if (findOwnPost) {
+          ownStatus = findOwnPost.likeStatus;
+        }
+      }
+      currentPost.extendedLikesInfo.myStatus = ownStatus;
+
+      // getting 3 last likes
+      currentPost.extendedLikesInfo.newestLikes = await this.likePostModel
+        .find(
+          {
+            $and: [{ postId: postId }, { likeStatus: 'Like' }],
+          },
+          {
+            _id: false,
+            __v: false,
+            postId: false,
+            likeStatus: false,
+          },
+        )
+        .sort({ addedAt: -1 })
+        .limit(3);
+
+      filledPosts.push(currentPost);
+    }
+    console.log(filledPosts);
+
     return transformToPaginationView<OutputPostDto>(
       totalCount,
       query.pageSize,
       query.pageNumber,
-      idMapper(posts),
+      idMapper(filledPosts),
     );
   }
   async findOne(
@@ -154,7 +204,6 @@ export class PostsRepository {
 
       filledPosts.push(currentPost);
     }
-    console.log(filledPosts[0], 'likes');
 
     return idMapper(filledPosts[0]);
   }

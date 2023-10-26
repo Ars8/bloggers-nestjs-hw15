@@ -20,8 +20,11 @@ export class PostsService {
     return this.postsRepository.create(createPostDto);
   }
 
-  async findAll(query: QueryType): Promise<PaginationViewType<OutputPostDto>> {
-    return this.postsRepository.findAll(query);
+  async findAll(
+    query: QueryType,
+    user: { userId: string; userName: string } | null,
+  ): Promise<PaginationViewType<OutputPostDto>> {
+    return this.postsRepository.findAll(query, user);
   }
 
   async findOne(
