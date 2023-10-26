@@ -49,6 +49,7 @@ export class PostsController {
   ): Promise<OutputPostDto | null> {
     const post = await this.postsService.findOne(id, req.user);
     if (!post) throw new NotFoundException();
+    console.log(post);
     return post;
   }
   @UseGuards(AuthGuard('basic'))

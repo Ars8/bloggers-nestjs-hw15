@@ -26,7 +26,7 @@ export class PostsRepository {
     const createdPost = new this.postModel({
       ...createPostDto,
       createdAt: new Date().toISOString(),
-      blogName: createPostDto.blogId,
+      blogName: createPostDto.title,
       extendedLikesInfo: {
         likesCount: 0,
         dislikesCount: 0,
@@ -35,10 +35,6 @@ export class PostsRepository {
       },
     });
     await createdPost.save();
-    await createdPost.populate({
-      path: 'blogName',
-      transform: returnNameFromPopulation,
-    });
     return idMapper(createdPost.toObject());
   }
   async findAllPostsForBlog(
@@ -155,14 +151,12 @@ export class PostsRepository {
         )
         .sort({ addedAt: -1 })
         .limit(3);
-      console.log(currentPost.extendedLikesInfo.newestLikes);
 
       filledPosts.push(currentPost);
-
-      console.log(filledPosts, 'likes');
     }
+    console.log(filledPosts, 'likes');
 
-    return idMapper(post);
+    return idMapper(filledPosts);
   }
   async update(id: string, updatePostDto: UpdatePostDto): Promise<boolean> {
     if (!isValidObjectId(id)) return false;

@@ -34,8 +34,8 @@ export class Post {
   content: string;
   @Prop({ required: true })
   blogId: string;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Blog' })
-  blogName: Blog;
+  @Prop({ required: true })
+  blogName: string;
   @Prop({ required: true })
   createdAt: string;
   @Prop({ required: true })

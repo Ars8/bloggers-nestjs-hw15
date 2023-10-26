@@ -1,0 +1,66 @@
+CONNECTED(000001D4)
+---
+Certificate chain
+ 0 s:C = US, ST = California, L = San Francisco, O = BadSSL Fallback. Unknown subdomain or no SNI., CN = badssl-fallback-unknown-subdomain-or-no-sni
+   i:O = AO Kaspersky Lab, CN = Kaspersky Endpoint Security Personal Certification Authority
+ 1 s:O = AO Kaspersky Lab, CN = Kaspersky Endpoint Security Personal Certification Authority
+   i:O = AO Kaspersky Lab, CN = Kaspersky Endpoint Security Personal Certification Authority
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIID6zCCAtOgAwIBAgIhANBzs4lDs2vZcOyPYbOhrqZuWO/xYNruFDvLnZlnhngT
+MA0GCSqGSIb3DQEBCwUAMGIxGTAXBgNVBAoMEEFPIEthc3BlcnNreSBMYWIxRTBD
+BgNVBAMMPEthc3BlcnNreSBFbmRwb2ludCBTZWN1cml0eSBQZXJzb25hbCBDZXJ0
+aWZpY2F0aW9uIEF1dGhvcml0eTAeFw0yMjEyMjkyMTAwMDBaFw0yMjEyMzAyMTAw
+MDBaMIGoMQswCQYDVQQGEwJVUzETMBEGA1UECAwKQ2FsaWZvcm5pYTEWMBQGA1UE
+BwwNU2FuIEZyYW5jaXNjbzE2MDQGA1UECgwtQmFkU1NMIEZhbGxiYWNrLiBVbmtu
+b3duIHN1YmRvbWFpbiBvciBubyBTTkkuMTQwMgYDVQQDDCtiYWRzc2wtZmFsbGJh
+Y2stdW5rbm93bi1zdWJkb21haW4tb3Itbm8tc25pMIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEAvB0CpsQhvheXInBknHfKCk8qOHFig1XzV2CbKd6M7Q8u
+wzT2UjH00WfjjRH60Ghr9Nr4Nk9x9El7sBlU0ITIMAJ/LIgRuTuXKVj7nCUu4unZ
+7BDZH6qSJjsBU3BqMZscn9DBYgv6857BmpULGZdNNscyJn6ltJdw6LA/WT+/RAED
+tuUFOv5yLD6D/Uny4ex75MGe4ypRMZQB6U4LLlzDO+xwVToxfqPE0GnfBgL4UETQ
+9dR1sF+lvcwVtYDFBTL0Qa+7jK8zHmRS48jjM+Koqnh5RbMLgrmb24O6gJhQ/vmf
+TjI9hn4ncOIYUxg6rSpnUY8EzLemw+iEGa2g9OmJOQIDAQABo0UwQzAJBgNVHRME
+AjAAMDYGA1UdEQQvMC2CK2JhZHNzbC1mYWxsYmFjay11bmtub3duLXN1YmRvbWFp
+bi1vci1uby1zbmkwDQYJKoZIhvcNAQELBQADggEBABPAv034Vq9aafn9zEi6TKvA
+KOd8sWXruoA25FO2PTdMpBSbg82VhtKfIxkUVUcmSERd8hDx+oPzswhBFC9LOyQH
+yiKCzCXtH/Zhn3CotxIALXfqxljnGMDoXuxFlmPTGzUb2W4ObtkIPqKgtLlaV3aw
+KIA3bmthvDAoRXk9xbodJh56aJdsvQwnr9kdv8NiyBubcRM1UGCQ5AD5qss3Uh8Q
+N3pesVtmetTqG2l2/69hgUV9SbSGLPF6x2arEJvW4C4nUqkuxJ4zbfPELEJCcFpL
+7ZwUW9mE9WczZ+s+EzrSIF5PHeUaoj13/s4uaeZ+qLC6+TP6Bkj0zX7PJq1e/rg=
+-----END CERTIFICATE-----
+subject=C = US, ST = California, L = San Francisco, O = BadSSL Fallback. Unknown subdomain or no SNI., CN = badssl-fallback-unknown-subdomain-or-no-sni
+
+issuer=O = AO Kaspersky Lab, CN = Kaspersky Endpoint Security Personal Certification Authority
+
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: RSA-PSS
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 2407 bytes and written 416 bytes
+Verification error: certificate has expired
+---
+New, TLSv1.2, Cipher is ECDHE-RSA-AES128-GCM-SHA256
+Server public key is 2048 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+SSL-Session:
+    Protocol  : TLSv1.2
+    Cipher    : ECDHE-RSA-AES128-GCM-SHA256
+    Session-ID: 
+    Session-ID-ctx: 
+    Master-Key: D471F3EB21C3F3A73036AF26CA45C2B8CDFDD1B73AF65EFD8722A51A9AFAD8A7C41C404CCEAD5B7FB8AAD80CDA9A8BF9
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    Start Time: 1698301132
+    Timeout   : 7200 (sec)
+    Verify return code: 10 (certificate has expired)
+    Extended master secret: yes
+---
+closed
