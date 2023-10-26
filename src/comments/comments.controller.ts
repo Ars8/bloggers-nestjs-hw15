@@ -69,13 +69,14 @@ export class CommentsController {
     return HttpStatus.NO_CONTENT;
   }
   @UseGuards(JwtAuthGuard)
-  @Put('id/like-status')
+  @Put(':id/like-status')
   async likeStatusCommentId(
     @Request() req,
     @Param('id') id: string,
     @Body() likeStatusCommentDto: LikeStatusCommentDto,
   ) {
     const comment = await this.commentsService.findById(id);
+    console.log(comment);
     if (!comment) throw new NotFoundException();
     const likeComment = this.commentsService.changeLikeStatusComment(
       id,
