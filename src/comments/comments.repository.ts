@@ -117,7 +117,7 @@ export class CommentsRepository {
       { upsert: true },
     );
     if (!likeComment) return false;
-    console.log(likeComment);
+    //console.log(likeComment);
     await likeComment.save();
     return true;
   }

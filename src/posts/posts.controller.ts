@@ -52,6 +52,7 @@ export class PostsController {
     @Param('id') id: string,
   ): Promise<OutputPostDto | null> {
     const post = await this.postsService.findOne(id, req.user);
+    //console.log(req.user);
     if (!post) throw new NotFoundException();
     return post;
   }

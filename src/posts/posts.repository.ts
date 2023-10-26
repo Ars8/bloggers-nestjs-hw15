@@ -50,7 +50,7 @@ export class PostsRepository {
       .limit(query.pageSize)
       .lean();
 
-      const filledPosts = [];
+    const filledPosts = [];
 
     const findpost = posts;
     for (const i in findpost) {
@@ -101,7 +101,7 @@ export class PostsRepository {
 
       filledPosts.push(currentPost);
     }
-    console.log(filledPosts);
+    //console.log(filledPosts);
 
     return transformToPaginationView<OutputPostDto>(
       totalCount,
@@ -180,7 +180,7 @@ export class PostsRepository {
 
       filledPosts.push(currentPost);
     }
-    console.log(filledPosts);
+    //console.log(filledPosts);
 
     return transformToPaginationView<OutputPostDto>(
       totalCount,
@@ -196,13 +196,15 @@ export class PostsRepository {
     if (!isValidObjectId(id)) return null;
     const post = await this.postModel.findById(id).lean();
 
+    console.log(user);
+
     if (!post) {
       return null;
     }
 
-    if (!user) {
+    /* if (!user) {
       return idMapper(post);
-    }
+    } */
 
     const filledPosts = [];
 
@@ -302,7 +304,6 @@ export class PostsRepository {
       { upsert: true },
     );
     if (!likePost) return false;
-    console.log(likePost);
     await likePost.save();
     return true;
   }
