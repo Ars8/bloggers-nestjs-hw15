@@ -196,7 +196,7 @@ export class PostsRepository {
     if (!isValidObjectId(id)) return null;
     const post = await this.postModel.findById(id).lean();
 
-    console.log(user);
+    //console.log(user);
 
     if (!post) {
       return null;
