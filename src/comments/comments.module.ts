@@ -5,6 +5,7 @@ import { CommentsRepository } from './comments.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Comment, CommentSchema } from './entities/comment.entity';
 import { LikeComment, LikeCommentSchema } from './entities/like-comment.entity';
+import { PreparationComments } from './preparation-comments';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { LikeComment, LikeCommentSchema } from './entities/like-comment.entity';
     ]),
   ],
   controllers: [CommentsController],
-  providers: [CommentsService, CommentsRepository],
+  providers: [CommentsService, CommentsRepository, PreparationComments],
 })
 export class CommentsModule {}

@@ -13,7 +13,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { Post, PostDocument } from './entities/post.entity';
 import { LikeStatusPostDto } from './dto/like-status-post.dto';
 import { LikePost, LikePostDocument } from './entities/like-post.entity';
-import { PreparationPosts } from 'src/helpers/preparation-posts';
+import { PreparationPosts } from 'src/posts/preparation-posts';
 
 const returnNameFromPopulation = (doc) => doc.name;
 
