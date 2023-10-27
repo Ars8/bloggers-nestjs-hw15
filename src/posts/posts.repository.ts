@@ -102,17 +102,10 @@ export class PostsRepository {
     user: { userId: string; userName: string } | null,
   ): Promise<OutputPostDto | null> {
     if (!isValidObjectId(id)) return null;
-    const post = await this.postModel
-      .findOne(
-        { id: id },
-        {
-          __v: false,
-        },
-      )
-      .lean();
+    const post = await this.postModel.findById(id).lean();
 
     //console.log(idMapper(post).extendedLikesInfo.likesCount);
-    //console.log(user);
+    console.log(idMapper(post));
 
     if (!post) {
       return null;
@@ -128,7 +121,7 @@ export class PostsRepository {
         user,
       );
 
-    console.log(filledPost[0]);
+    //console.log(filledPost[0]);
 
     return idMapper(filledPost[0]);
   }
