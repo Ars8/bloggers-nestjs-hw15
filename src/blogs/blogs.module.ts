@@ -9,6 +9,7 @@ import { Blog, BlogSchema } from './entities/blog.entity';
 import { LikePost, LikePostSchema } from 'src/posts/entities/like-post.entity';
 import { PostsService } from 'src/posts/posts.service';
 import { JwtService } from '@nestjs/jwt';
+import { PreparationPosts } from 'src/helpers/preparation-posts';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { JwtService } from '@nestjs/jwt';
     { provide: 'IBlogsRepository', useClass: BlogsRepository },
     PostsRepository,
     JwtService,
+    PreparationPosts,
   ],
 })
 export class BlogsModule {}

@@ -13,6 +13,7 @@ import {
   LikeCommentSchema,
 } from 'src/comments/entities/like-comment.entity';
 import { JwtService } from '@nestjs/jwt';
+import { PreparationPosts } from 'src/helpers/preparation-posts';
 
 @Module({
   imports: [
@@ -25,6 +26,12 @@ import { JwtService } from '@nestjs/jwt';
     ]),
   ],
   controllers: [PostsController],
-  providers: [PostsService, PostsRepository, CommentsRepository, JwtService],
+  providers: [
+    PostsService,
+    PostsRepository,
+    CommentsRepository,
+    JwtService,
+    PreparationPosts,
+  ],
 })
 export class PostsModule {}

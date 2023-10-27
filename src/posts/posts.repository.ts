@@ -13,6 +13,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { Post, PostDocument } from './entities/post.entity';
 import { LikeStatusPostDto } from './dto/like-status-post.dto';
 import { LikePost, LikePostDocument } from './entities/like-post.entity';
+import { PreparationPosts } from 'src/helpers/preparation-posts';
 
 const returnNameFromPopulation = (doc) => doc.name;
 
@@ -21,6 +22,7 @@ export class PostsRepository {
   constructor(
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
     @InjectModel(LikePost.name) private likePostModel: Model<LikePostDocument>,
+    private preparationPostsForReturn: PreparationPosts,
   ) {}
   async create(createPostDto: CreatePostDto): Promise<OutputPostDto> {
     const createdPost = new this.postModel({
@@ -50,64 +52,17 @@ export class PostsRepository {
       .limit(query.pageSize)
       .lean();
 
-    const filledPosts = [];
-
-    const findpost = posts;
-    for (const i in findpost) {
-      const postId = findpost[i]._id.toString();
-      const currentPost = findpost[i];
-
-      // getting likes and count
-      currentPost.extendedLikesInfo.likesCount = await this.likePostModel
-        .countDocuments({
-          $and: [{ postId: postId }, { likeStatus: 'Like' }],
-        })
-        .lean();
-
-      // getting dislikes and count
-      currentPost.extendedLikesInfo.dislikesCount = await this.likePostModel
-        .countDocuments({
-          $and: [{ postId: postId }, { likeStatus: 'Dislike' }],
-        })
-        .lean();
-
-      // getting the status of the postOwner
-      let ownStatus = 'None';
-      if (user) {
-        const findOwnPost = await this.likePostModel.findOne({
-          $and: [{ postId: postId }, { userId: user.userId }],
-        });
-        if (findOwnPost) {
-          ownStatus = findOwnPost.likeStatus;
-        }
-      }
-      currentPost.extendedLikesInfo.myStatus = ownStatus;
-
-      // getting 3 last likes
-      currentPost.extendedLikesInfo.newestLikes = await this.likePostModel
-        .find(
-          {
-            $and: [{ postId: postId }, { likeStatus: 'Like' }],
-          },
-          {
-            _id: false,
-            __v: false,
-            postId: false,
-            likeStatus: false,
-          },
-        )
-        .sort({ addedAt: -1 })
-        .limit(3);
-
-      filledPosts.push(currentPost);
-    }
-    //console.log(filledPosts);
+    const filledPosts =
+      await this.preparationPostsForReturn.preparationPostsForReturn(
+        idMapper(posts),
+        user,
+      );
 
     return transformToPaginationView<OutputPostDto>(
       totalCount,
       query.pageSize,
       query.pageNumber,
-      idMapper(posts),
+      filledPosts,
     );
   }
   async findAll(
@@ -129,64 +84,17 @@ export class PostsRepository {
       .sort({ [query.sortBy]: query.sortDirection })
       .lean();
 
-    const filledPosts = [];
-
-    const findpost = posts;
-    for (const i in findpost) {
-      const postId = findpost[i]._id.toString();
-      const currentPost = findpost[i];
-
-      // getting likes and count
-      currentPost.extendedLikesInfo.likesCount = await this.likePostModel
-        .countDocuments({
-          $and: [{ postId: postId }, { likeStatus: 'Like' }],
-        })
-        .lean();
-
-      // getting dislikes and count
-      currentPost.extendedLikesInfo.dislikesCount = await this.likePostModel
-        .countDocuments({
-          $and: [{ postId: postId }, { likeStatus: 'Dislike' }],
-        })
-        .lean();
-
-      // getting the status of the postOwner
-      let ownStatus = 'None';
-      if (user) {
-        const findOwnPost = await this.likePostModel.findOne({
-          $and: [{ postId: postId }, { userId: user.userId }],
-        });
-        if (findOwnPost) {
-          ownStatus = findOwnPost.likeStatus;
-        }
-      }
-      currentPost.extendedLikesInfo.myStatus = ownStatus;
-
-      // getting 3 last likes
-      currentPost.extendedLikesInfo.newestLikes = await this.likePostModel
-        .find(
-          {
-            $and: [{ postId: postId }, { likeStatus: 'Like' }],
-          },
-          {
-            _id: false,
-            __v: false,
-            postId: false,
-            likeStatus: false,
-          },
-        )
-        .sort({ addedAt: -1 })
-        .limit(3);
-
-      filledPosts.push(currentPost);
-    }
-    //console.log(filledPosts);
+    const filledPosts =
+      await this.preparationPostsForReturn.preparationPostsForReturn(
+        idMapper(posts),
+        user,
+      );
 
     return transformToPaginationView<OutputPostDto>(
       totalCount,
       query.pageSize,
       query.pageNumber,
-      idMapper(filledPosts),
+      filledPosts,
     );
   }
   async findOne(
@@ -194,8 +102,16 @@ export class PostsRepository {
     user: { userId: string; userName: string } | null,
   ): Promise<OutputPostDto | null> {
     if (!isValidObjectId(id)) return null;
-    const post = await this.postModel.findById(id).lean();
+    const post = await this.postModel
+      .findOne(
+        { id: id },
+        {
+          __v: false,
+        },
+      )
+      .lean();
 
+    //console.log(idMapper(post).extendedLikesInfo.likesCount);
     //console.log(user);
 
     if (!post) {
@@ -206,59 +122,15 @@ export class PostsRepository {
       return idMapper(post);
     }
 
-    const filledPosts = [];
+    const filledPost =
+      await this.preparationPostsForReturn.preparationPostsForReturn(
+        [idMapper(post)],
+        user,
+      );
 
-    const findpost = [post];
-    for (const i in findpost) {
-      const postId = findpost[i]._id.toString();
-      const currentPost = findpost[i];
+    //console.log(filledPost);
 
-      // getting likes and count
-      currentPost.extendedLikesInfo.likesCount = await this.likePostModel
-        .countDocuments({
-          $and: [{ postId: postId }, { likeStatus: 'Like' }],
-        })
-        .lean();
-
-      // getting dislikes and count
-      currentPost.extendedLikesInfo.dislikesCount = await this.likePostModel
-        .countDocuments({
-          $and: [{ postId: postId }, { likeStatus: 'Dislike' }],
-        })
-        .lean();
-
-      // getting the status of the postOwner
-      let ownStatus = 'None';
-      if (user) {
-        const findOwnPost = await this.likePostModel.findOne({
-          $and: [{ postId: postId }, { userId: user.userId }],
-        });
-        if (findOwnPost) {
-          ownStatus = findOwnPost.likeStatus;
-        }
-      }
-      currentPost.extendedLikesInfo.myStatus = ownStatus;
-
-      // getting 3 last likes
-      currentPost.extendedLikesInfo.newestLikes = await this.likePostModel
-        .find(
-          {
-            $and: [{ postId: postId }, { likeStatus: 'Like' }],
-          },
-          {
-            _id: false,
-            __v: false,
-            postId: false,
-            likeStatus: false,
-          },
-        )
-        .sort({ addedAt: -1 })
-        .limit(3);
-
-      filledPosts.push(currentPost);
-    }
-
-    return idMapper(filledPosts[0]);
+    return idMapper(filledPost);
   }
   async update(id: string, updatePostDto: UpdatePostDto): Promise<boolean> {
     if (!isValidObjectId(id)) return false;
