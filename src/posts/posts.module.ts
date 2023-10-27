@@ -13,7 +13,7 @@ import {
   LikeCommentSchema,
 } from 'src/comments/entities/like-comment.entity';
 import { JwtService } from '@nestjs/jwt';
-import { PreparationPosts } from 'src/posts/preparation-posts';
+import { PreparationPosts } from 'src/posts/preparation.posts';
 
 @Module({
   imports: [

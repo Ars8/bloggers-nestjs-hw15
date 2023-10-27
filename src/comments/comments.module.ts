@@ -5,7 +5,7 @@ import { CommentsRepository } from './comments.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Comment, CommentSchema } from './entities/comment.entity';
 import { LikeComment, LikeCommentSchema } from './entities/like-comment.entity';
-import { PreparationComments } from './preparation-comments';
+import { PreparationComments } from './preparation.comments';
 
 @Module({
   imports: [

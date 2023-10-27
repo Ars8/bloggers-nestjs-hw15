@@ -9,7 +9,7 @@ import { Blog, BlogSchema } from './entities/blog.entity';
 import { LikePost, LikePostSchema } from 'src/posts/entities/like-post.entity';
 import { PostsService } from 'src/posts/posts.service';
 import { JwtService } from '@nestjs/jwt';
-import { PreparationPosts } from 'src/posts/preparation-posts';
+import { PreparationPosts } from 'src/posts/preparation.posts';
 
 @Module({
   imports: [
