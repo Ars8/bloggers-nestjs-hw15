@@ -67,7 +67,8 @@ export class CommentsRepository {
         [idMapper(comment)],
         user,
       );
-    return filledComment[0];
+    const { postId: postID, ...rest } = filledComment[0];
+    return rest;
   }
   async getPostComments(
     postId: string,
