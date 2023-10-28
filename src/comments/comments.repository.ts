@@ -58,7 +58,6 @@ export class CommentsRepository {
   ): Promise<OutputCommentDto | null> {
     if (!isValidObjectId(id)) return null;
     const comment = await this.commentModel.findById(id).lean();
-    console.log(comment);
 
     if (!comment) return null;
 
@@ -67,6 +66,8 @@ export class CommentsRepository {
         [idMapper(comment)],
         user,
       );
+    console.log(filledComment);
+
     const { postId: postID, ...rest } = filledComment[0];
     return rest;
   }
