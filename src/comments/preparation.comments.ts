@@ -6,7 +6,6 @@ import {
   LikeComment,
   LikeCommentDocument,
 } from 'src/comments/entities/like-comment.entity';
-import { UserType } from 'src/posts/dto/user-type.dto';
 
 @Injectable()
 export class PreparationComments {
@@ -17,7 +16,7 @@ export class PreparationComments {
 
   async preparationCommentsForReturn(
     commentsArray: CommentType[],
-    currentUser: UserType | null,
+    currentUser: { userId: string; userName: string } | null,
   ) {
     const filledComments = [];
     for (const i in commentsArray) {
@@ -28,10 +27,7 @@ export class PreparationComments {
       if (currentUser) {
         const currentComment = await this.likeCommentModel.findOne(
           {
-            $and: [
-              { userId: currentUser.accountData.id },
-              { commentId: commentId },
-            ],
+            $and: [{ userId: currentUser.userId }, { commentId: commentId }],
           },
           {
             _id: false,

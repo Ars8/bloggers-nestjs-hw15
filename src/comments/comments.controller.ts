@@ -21,6 +21,7 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { OutputCommentDto } from './dto/output-comment.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { LikeStatusCommentDto } from './dto/like-status-comment.dto';
+import { ExtractUserFromToken } from 'src/auth/guards/extractUserFromToken.guard';
 
 @Controller('comments')
 export class CommentsController {
@@ -36,9 +37,13 @@ export class CommentsController {
     return this.commentsService.findAll();
   }
 
+  @UseGuards(ExtractUserFromToken)
   @Get(':id')
-  async findById(@Param('id') id: string): Promise<OutputCommentDto> {
-    const comment = await this.commentsService.findById(id);
+  async findById(
+    @Request() req,
+    @Param('id') id: string
+    ): Promise<OutputCommentDto> {
+    const comment = await this.commentsService.findById(id, req.user);
     if (!comment) throw new NotFoundException();
     return comment;
   }
@@ -49,7 +54,7 @@ export class CommentsController {
     @Body() updateCommentDto: UpdateCommentDto,
     @Request() req,
   ) {
-    const comment = await this.commentsService.findById(id);
+    const comment = await this.commentsService.findById(id, null);
     if (!comment) throw new NotFoundException();
     if (comment.commentatorInfo.userId !== req.user.userId) {
       throw new ForbiddenException();
@@ -60,7 +65,7 @@ export class CommentsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async remove(@Param('id') id: string, @Request() req) {
-    const comment = await this.commentsService.findById(id);
+    const comment = await this.commentsService.findById(id, null);
     if (!comment) throw new NotFoundException();
     if (comment.commentatorInfo.userId !== req.user.userId) {
       throw new ForbiddenException();
@@ -75,7 +80,7 @@ export class CommentsController {
     @Param('id') id: string,
     @Body() likeStatusCommentDto: LikeStatusCommentDto,
   ) {
-    const comment = await this.commentsService.findById(id);
+    const comment = await this.commentsService.findById(id, null);
     //console.log(comment);
     if (!comment) throw new NotFoundException();
     const likeComment = this.commentsService.changeLikeStatusComment(

@@ -16,6 +16,7 @@ import {
   LikeComment,
   LikeCommentDocument,
 } from './entities/like-comment.entity';
+import { PreparationComments } from './preparation.comments';
 
 @Injectable()
 export class CommentsRepository {
@@ -23,6 +24,7 @@ export class CommentsRepository {
     @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
     @InjectModel(LikeComment.name)
     private likeCommentModel: Model<LikeCommentDocument>,
+    private preparationCommentForReturn: PreparationComments,
   ) {}
   async create(
     postId: string,
@@ -50,12 +52,20 @@ export class CommentsRepository {
     const { postId: postID, ...rest } = createdComment.toObject();
     return idMapper(rest);
   }
-  async findById(id: string): Promise<OutputCommentDto | null> {
+  async findById(
+    id: string,
+    user: { userId: string; userName: string } | null,
+  ): Promise<OutputCommentDto | null> {
     if (!isValidObjectId(id)) return null;
     const comment = await this.commentModel.findById(id, { postId: 0 }).lean();
-    console.log(comment);
+    const filledComment =
+      await this.preparationCommentForReturn.preparationCommentsForReturn(
+        [idMapper(comment)],
+        user,
+      );
+    console.log(filledComment);
     if (!comment) return null;
-    return idMapper(comment);
+    return filledComment[0];
   }
   async getPostComments(
     postId: string,

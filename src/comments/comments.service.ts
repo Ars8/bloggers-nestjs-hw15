@@ -16,8 +16,11 @@ export class CommentsService {
     return `This action returns all comments`;
   }
 
-  async findById(id: string): Promise<OutputCommentDto | null> {
-    return this.commentsRepository.findById(id);
+  async findById(
+    id: string,
+    user: { userId: string; userName: string } | null,
+  ): Promise<OutputCommentDto | null> {
+    return this.commentsRepository.findById(id, user);
   }
 
   async update(

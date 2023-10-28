@@ -14,6 +14,7 @@ import {
 } from 'src/comments/entities/like-comment.entity';
 import { JwtService } from '@nestjs/jwt';
 import { PreparationPosts } from './preparation.posts';
+import { PreparationComments } from 'src/comments/preparation.comments';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PreparationPosts } from './preparation.posts';
     CommentsRepository,
     JwtService,
     PreparationPosts,
+    PreparationComments,
   ],
 })
 export class PostsModule {}
