@@ -57,14 +57,16 @@ export class CommentsRepository {
     user: { userId: string; userName: string } | null,
   ): Promise<OutputCommentDto | null> {
     if (!isValidObjectId(id)) return null;
-    const comment = await this.commentModel.findById(id, { postId: 0 }).lean();
+    const comment = await this.commentModel.findById(id).lean();
+    console.log(comment);
+
+    if (!comment) return null;
+
     const filledComment =
       await this.preparationCommentForReturn.preparationCommentsForReturn(
         [idMapper(comment)],
         user,
       );
-    console.log(filledComment);
-    if (!comment) return null;
     return filledComment[0];
   }
   async getPostComments(

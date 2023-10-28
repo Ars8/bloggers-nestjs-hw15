@@ -41,8 +41,8 @@ export class CommentsController {
   @Get(':id')
   async findById(
     @Request() req,
-    @Param('id') id: string
-    ): Promise<OutputCommentDto> {
+    @Param('id') id: string,
+  ): Promise<OutputCommentDto | null> {
     const comment = await this.commentsService.findById(id, req.user);
     if (!comment) throw new NotFoundException();
     return comment;
