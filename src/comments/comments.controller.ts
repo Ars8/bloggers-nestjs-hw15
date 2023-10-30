@@ -77,6 +77,7 @@ export class CommentsController {
     await this.commentsService.remove(id);
     return HttpStatus.NO_CONTENT;
   }
+  @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard)
   @Put(':id/like-status')
   async likeStatusCommentId(
