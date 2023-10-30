@@ -90,13 +90,13 @@ export class CommentsRepository {
       );
     console.log(filledComment);
 
-    const { postId: postID, ...rest } = filledComment[0];
+    //const { postId: postID, ...rest } = filledComment[0];
 
     return transformToPaginationView<OutputCommentDto>(
       totalCount,
       query.pageSize,
       query.pageNumber,
-      idMapper(rest),
+      filledComment,
     );
   }
   async update(
