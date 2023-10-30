@@ -82,11 +82,21 @@ export class CommentsRepository {
       .skip(query.pageSize * (query.pageNumber - 1))
       .limit(query.pageSize)
       .lean();
+
+    const filledComment =
+      await this.preparationCommentForReturn.preparationCommentsForReturn(
+        idMapper(comments),
+        null,
+      );
+    console.log(filledComment);
+
+    const { postId: postID, ...rest } = filledComment[0];
+
     return transformToPaginationView<OutputCommentDto>(
       totalCount,
       query.pageSize,
       query.pageNumber,
-      idMapper(comments),
+      idMapper(rest),
     );
   }
   async update(
