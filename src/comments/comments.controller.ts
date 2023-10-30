@@ -66,7 +66,7 @@ export class CommentsController {
     return HttpStatus.NO_CONTENT;
   }
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(ExtractUserFromToken)
+  @UseGuards(JwtAuthGuard, ExtractUserFromToken)
   @Delete(':id')
   async remove(@Param('id') id: string, @Request() req) {
     const comment = await this.commentsService.findById(id, null);
