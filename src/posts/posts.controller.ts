@@ -86,14 +86,16 @@ export class PostsController {
     if (!post) throw new NotFoundException();
     return this.postsService.addComment(id, req.user, createCommentDto);
   }
+  @UseGuards(ExtractUserFromToken)
   @Get(':id/comments')
   async getComments(
+    @Request() req,
     @Param('id') id: string,
     @Query() query,
   ): Promise<PaginationViewType<OutputCommentDto>> {
     const post = await this.postsService.findOne(id, null);
     if (!post) throw new NotFoundException();
-    return this.postsService.getPostComments(id, queryHandler(query));
+    return this.postsService.getPostComments(id, queryHandler(query), req.user);
   }
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)

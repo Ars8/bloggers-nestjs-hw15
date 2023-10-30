@@ -74,6 +74,10 @@ export class CommentsRepository {
   async getPostComments(
     postId: string,
     query: QueryType,
+    user: {
+      userId: string;
+      userName: string;
+    },
   ): Promise<PaginationViewType<OutputCommentDto>> {
     const totalCount = await this.commentModel.count({ postId });
     const comments = await this.commentModel
@@ -86,7 +90,7 @@ export class CommentsRepository {
     const filledComment =
       await this.preparationCommentForReturn.preparationCommentsForReturn(
         idMapper(comments),
-        null,
+        user,
       );
     console.log(filledComment);
 

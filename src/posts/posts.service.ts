@@ -54,8 +54,12 @@ export class PostsService {
   async getPostComments(
     postId: string,
     query: QueryType,
+    user: {
+      userId: string;
+      userName: string;
+    },
   ): Promise<PaginationViewType<OutputCommentDto>> {
-    return this.commentsRepository.getPostComments(postId, query);
+    return this.commentsRepository.getPostComments(postId, query, user);
   }
   async changeLikeStatusPost(
     postId: string,
