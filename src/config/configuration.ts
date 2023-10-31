@@ -6,6 +6,8 @@ export default () => ({
   jwtSecret: process.env.JWT_SECRET || '666',
   jwtExpirationTime: process.env.JWT_EXPIRATION_TIME || '320s',
   jwtRefreshExpirationTime: process.env.JWT_REFRESH_EXPIRATION_TIME || '600s',
+  throttleLimit: parseInt(process.env.THROTTLE_LIMIT, 10),
+  throttleTtl: parseInt(process.env.THROTTLE_TTL, 10),
   database: {
     MONGOOSE_URI: process.env.MONGOOSE_URI,
   },

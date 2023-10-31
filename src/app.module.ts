@@ -25,6 +25,7 @@ import {
   LikeComment,
   LikeCommentSchema,
 } from './comments/entities/like-comment.entity';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -83,6 +84,12 @@ import {
       {
         name: LikeComment.name,
         schema: LikeCommentSchema,
+      },
+    ]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: parseInt(process.env.THROTTLE_TTL, 10),
+        limit: parseInt(process.env.THROTTLE_LIMIT, 10),
       },
     ]),
     AuthModule,
