@@ -57,7 +57,7 @@ export class CommentsController {
   ) {
     const comment = await this.commentsService.findById(id, null);
     if (!comment) throw new NotFoundException();
-    console.log(req.user.userId)
+    //console.log(req.user.userId),
 
     if (comment.commentatorInfo.userId !== req.user.userId) {
       throw new ForbiddenException();

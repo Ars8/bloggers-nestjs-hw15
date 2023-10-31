@@ -66,7 +66,7 @@ export class CommentsRepository {
         [idMapper(comment)],
         user,
       );
-    console.log(filledComment);
+    //console.log(filledComment);
 
     const { postId: postID, ...rest } = filledComment[0];
     return rest;
@@ -92,7 +92,7 @@ export class CommentsRepository {
         idMapper(comments),
         user,
       );
-    console.log(filledComment);
+    //console.log(filledComment);
 
     //const { postId: postID, ...rest } = filledComment[0];
 
