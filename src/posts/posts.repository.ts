@@ -105,7 +105,7 @@ export class PostsRepository {
     const post = await this.postModel.findById(id).lean();
 
     //console.log(idMapper(post).extendedLikesInfo.likesCount);
-    console.log(idMapper(post));
+    //console.log(idMapper(post));
 
     if (!post) {
       return null;
